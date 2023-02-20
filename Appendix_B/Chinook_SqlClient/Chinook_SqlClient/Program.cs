@@ -25,7 +25,6 @@ namespace Chinook_SqlClient
         {
             Customer test = new Customer()
             {
-                CustomerID = "ZZZZA",
                 FirstName = "Thomas",
                 LastName = "",
                 Country = "",
@@ -64,7 +63,7 @@ namespace Chinook_SqlClient
         static void PrintCustomer(Customer customer) 
         { 
             Console.WriteLine($"--- " +
-                $"{customer.CustomerID} - " +
+                $"{customer.CustomerId} - " +
                 $"{customer.FirstName}, {customer.LastName} - " +
                 $"{customer.Country}, {customer.PostalCode} - " +
                 $"{customer.Phone}, {customer.Email}");

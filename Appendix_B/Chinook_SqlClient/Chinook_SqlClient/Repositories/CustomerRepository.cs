@@ -22,8 +22,9 @@ namespace Chinook_SqlClient.Repositories
 
         public List<Customer> GetAllCustomers()
         {
+            //CustomerId,
             List<Customer> customerList = new List<Customer>();
-            string sql = "SELECT CustomerID, FirstName, LastName, Country, PostalCode, Phone, Email";
+            string sql = "SELECT  CustomerId, FirstName, LastName, Country, ISNULL(PostalCode,''), ISNULL(Phone,''), Email FROM Customer";
             try
             {
 
@@ -36,12 +37,15 @@ namespace Chinook_SqlClient.Repositories
                     {
                         //reader
                         using (SqlDataReader reader = cmd.ExecuteReader()) 
-                        { 
-                            while (reader.Read()) 
-                            { 
+                        {
+                           
+
+                            while (reader.Read())
+                            {
+                               
                                 //handle result
                                 Customer temp = new Customer();
-                                temp.CustomerID = reader.GetString(0);
+                                temp.CustomerId = reader.GetInt32(0).ToString();
                                 temp.FirstName = reader.GetString(1);
                                 temp.LastName = reader.GetString(2);
                                 temp.Country = reader.GetString(3);
@@ -54,9 +58,9 @@ namespace Chinook_SqlClient.Repositories
                     }
                 }
             }
-            catch (SqlException sqlEx)
+            catch (SqlException ex)
             {
-
+                Console.WriteLine(ex);
                 //log error
             }
             return customerList;
