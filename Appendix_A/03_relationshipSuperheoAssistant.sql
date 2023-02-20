@@ -1,5 +1,5 @@
-ALTER TABLE Superhero
-ADD Assistant_ID INT NOT NULL
+ALTER TABLE Assistant
+ADD FK_SuperheroID INT NOT NULL
 
-ALTER TABLE Superhero
-ADD FOREIGN KEY (Assistant_ID) REFERENCES Assistant(AssistantID)
+ALTER TABLE Assistant
+ADD FOREIGN KEY (FK_SuperheroID) REFERENCES Superhero(SuperheroID)
