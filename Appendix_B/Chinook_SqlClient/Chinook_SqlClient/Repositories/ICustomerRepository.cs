@@ -11,6 +11,7 @@ namespace Chinook_SqlClient.Repositories
 
         public List<Customer> GetAllCustomers(); //R
         public List<CustomerCountry> GetCustomerCountPrCountry(); //R
+        public List<CustomerSpender> GetHighestSpenderCustomer(); //R
 
         public List<Customer> GetOffsetLimitCustomers(string offset, string limit); //R
 

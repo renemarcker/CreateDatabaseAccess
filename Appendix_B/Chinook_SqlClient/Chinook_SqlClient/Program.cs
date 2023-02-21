@@ -16,7 +16,8 @@ namespace Chinook_SqlClient
             //TestInsert(repository);
             //TestSelect(repository);
             //TestUpdate(repository);
-            TestGetCustomerCountPrCountry(repository);
+            //TestGetCustomerCountPrCountry(repository);
+            TestGetHighestSpenderCustomer(repository);
         }
 
         static void TestSelectAll(ICustomerRepository repository) 
@@ -54,6 +55,22 @@ namespace Chinook_SqlClient
                 Console.WriteLine($"{c.country}: {c.count}");
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="repository"></param>
+        static void TestGetHighestSpenderCustomer(ICustomerRepository repository)
+        {
+            List<CustomerSpender> testCustomerByTotalSpent = new List<CustomerSpender>();
+            testCustomerByTotalSpent = repository.GetHighestSpenderCustomer();
+            
+            // lets write out the list to see the customers ordered by their total spending amount
+            foreach (CustomerSpender c in testCustomerByTotalSpent)
+            {
+                Console.WriteLine($"{c.customerId}: {c.customerName} total: {c.spendTotal}");
+            }
+        }
+
         static void PrintCustomers(IEnumerable<Customer> customers) 
         {
             int count = 0;

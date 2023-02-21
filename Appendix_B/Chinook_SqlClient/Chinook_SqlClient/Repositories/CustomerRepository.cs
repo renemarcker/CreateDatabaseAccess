@@ -317,5 +317,46 @@ namespace Chinook_SqlClient.Repositories
             }
             return customerPrCountryList;
         }
+        public List<CustomerSpender> GetHighestSpenderCustomer()
+        {
+
+            //CustomerId,
+            List<CustomerSpender> customerPrCountryList = new List<CustomerSpender>();
+
+            string sql = "SELECT Customer.CustomerId, Customer.FirstName, SUM(Invoice.Total) FROM Customer, Invoice WHERE Customer.CustomerId = Invoice.CustomerId GROUP BY CUSTOMER.CustomerId, Customer.FirstName ORDER BY SUM(Invoice.Total) DESC";
+            try
+            {
+
+                //connect
+                using (SqlConnection conn = new SqlConnection(ConnectionStringHelper.GetConnectionString()))
+                {
+                    conn.Open();
+                    //make a command
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                //handle result
+                                CustomerSpender temp = new CustomerSpender();
+                                temp.customerId = reader.GetInt32(0).ToString();
+                                temp.customerName = reader.GetString(1);
+                                temp.spendTotal = reader.GetDecimal(2).ToString();
+
+                                customerPrCountryList.Add(temp);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex);
+                //log error
+            }
+            return customerPrCountryList;
+        }
+        
     }
 }
