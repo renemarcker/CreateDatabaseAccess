@@ -15,6 +15,8 @@ namespace Chinook_SqlClient
             //TestSelectByName(repository);
             //TestInsert(repository);
             //TestSelect(repository);
+            //TestUpdate(repository);
+            TestGetCustomerCountPrCountry(repository);
         }
 
         static void TestSelectAll(ICustomerRepository repository) 
@@ -36,30 +38,22 @@ namespace Chinook_SqlClient
         }
         static void TestInsert(ICustomerRepository repository)
         {
-            repository.AddCustomer("Thomas", "Osterhammel", "Denmark", "1337", "112", "thomasIsCool@HotThomas.dk");
-            //Customer test = new Customer()
-            //{
-            //    FirstName = "Thomas",
-            //    LastName = "",
-            //    Country = "",
-            //    PostalCode = "12345",
-            //    Phone = "122152345124",
-            //    Email= "12345@gmail.com",
-            //};
-            //if (repository.AddNewCustomer(test)) 
-            //{
-            //    Console.WriteLine("Yay, insert worked");
-            //} else
-            //{
-            //    Console.WriteLine("BOOO!!");
-            //}
+            repository.AddCustomer("Michael", "PieGras", "Somalia", "667", "1337", "Michael@Piratemail.com");
         }
 
-        static void TestUpdate(ICustomerRepository repository) 
-        { 
-
+        static void TestUpdate(ICustomerRepository repository)
+        {
+            repository.UpdateCustomer("1", "Rene", "Marcker", "Antarctic", "1337", "112", "reneIsCold@PenguinMail.AC");
         }
-
+        static void TestGetCustomerCountPrCountry(ICustomerRepository repository)
+        {
+            List<CustomerCountry> testCustomerByCountryList = new List<CustomerCountry>();
+            testCustomerByCountryList = repository.GetCustomerCountPrCountry();
+            foreach (CustomerCountry c in testCustomerByCountryList)
+            {
+                Console.WriteLine($"{c.country}: {c.count}");
+            }
+        }
         static void PrintCustomers(IEnumerable<Customer> customers) 
         {
             int count = 0;

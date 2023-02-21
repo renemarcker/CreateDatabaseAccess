@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,7 +21,7 @@ namespace Chinook_SqlClient.Repositories
             throw new NotImplementedException();
         }
 
-        public void AddCustomer(string firstName, string lastName, string country,string postalCode, string phone, string email)
+        public void AddCustomer(string firstName, string lastName, string country, string postalCode, string phone, string email)
         {
             //CustomerId,
             List<Customer> customerList = new List<Customer>();
@@ -239,9 +240,82 @@ namespace Chinook_SqlClient.Repositories
             return temp;
 
         }
-        public bool UpdateCustomer(Customer customer)
+        public void UpdateCustomer(string idForUpdate, string firstName, string lastName, string country, string postalCode, string phone, string email)
         {
-            throw new NotImplementedException();
+
+            //CustomerId,
+            List<Customer> customerList = new List<Customer>();
+
+            string sql = "UPDATE Customer SET FirstName = @FirstName, LastName = @LastName, Country = @Country, PostalCode = ISNULL(@PostalCode, ''), Phone = ISNULL(@Phone, ''), Email = @Email Where CustomerId = @idForUpdate";
+
+            try
+            {
+
+                //connect
+                using (SqlConnection conn = new SqlConnection(ConnectionStringHelper.GetConnectionString()))
+                {
+                    conn.Open();
+                    //make a command
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@idForUpdate", idForUpdate);
+                        cmd.Parameters.AddWithValue("@FirstName", firstName);
+                        cmd.Parameters.AddWithValue("@LastName", lastName);
+                        cmd.Parameters.AddWithValue("@Country", country);
+                        cmd.Parameters.AddWithValue("@PostalCode", postalCode);
+                        cmd.Parameters.AddWithValue("@Phone", phone);
+                        cmd.Parameters.AddWithValue("@Email", email);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex);
+                //log error
+            }
+
+        }
+        public List<CustomerCountry> GetCustomerCountPrCountry()
+        {
+
+            //CustomerId,
+            List<CustomerCountry> customerPrCountryList = new List<CustomerCountry>();
+
+
+
+            string sql = "SELECT COUNT(CustomerId), Country FROM CUSTOMER GROUP BY Country ORDER BY COUNT(CustomerId) DESC";
+            try
+            {
+
+                //connect
+                using (SqlConnection conn = new SqlConnection(ConnectionStringHelper.GetConnectionString()))
+                {
+                    conn.Open();
+                    //make a command
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                //handle result
+                                CustomerCountry temp = new CustomerCountry();
+                                temp.count = reader.GetInt32(0).ToString();
+                                temp.country = reader.GetString(1).ToString();
+
+                                customerPrCountryList.Add(temp);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex);
+                //log error
+            }
+            return customerPrCountryList;
         }
     }
 }
