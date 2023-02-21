@@ -1,5 +1,7 @@
 # CreateDatabaseAccess
-This project is an assignment related to the back-end part of the Fullstack .Net Developer Accelerated Learning (Noroff). The focus is using SQL to create a database, manipulating SQL Server with C#, Git usage and pair programming. The whole description of the assignment can be found as **Assignment 2_CSharp_Data access with SQL Client.pdf**. 
+This project is an assignment related to the back-end part of the Fullstack .Net Developer Accelerated Learning (Noroff). The focus is using SQL to create a database, manipulating SQL Server with C#, Git usage and pair programming. 
+
+The whole description of the assignment can be found as **Assignment 2_CSharp_Data access with SQL Client.pdf**. 
 
 ## Appendix A
 This part is all about creating a database (using SSMS) with content and setup the relationships.
