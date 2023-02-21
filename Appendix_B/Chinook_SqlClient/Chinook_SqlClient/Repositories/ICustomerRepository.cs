@@ -8,6 +8,7 @@ namespace Chinook_SqlClient.Repositories
         public bool AddNewCustomer(Customer customer); //C
 
         public Customer GetCustomer(string id);
+        public Customer GetCustomer(string firstName, string lastName);
 
         public List<Customer> GetAllCustomers(); //R
 
