@@ -11,6 +11,7 @@ namespace Chinook_SqlClient.Repositories
         public Customer GetCustomer(string firstName, string lastName);
 
         public List<Customer> GetAllCustomers(); //R
+        public List<Customer> GetMinCustomers(string min, string max); //R
 
         public bool UpdateCustomer(Customer customer); //U  
 

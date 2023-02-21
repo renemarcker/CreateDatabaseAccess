@@ -8,13 +8,14 @@ namespace Chinook_SqlClient
         static void Main(string[] args)
         {
             ICustomerRepository repository = new CustomerRepository();
-            //TestSelectAll(repository);
-            TestSelect(repository);
+            TestSelectAll(repository);
+            //TestSelect(repository);
         }
 
         static void TestSelectAll(ICustomerRepository repository) 
         { 
-            PrintCustomers(repository.GetAllCustomers());
+            //PrintCustomers(repository.GetAllCustomers());
+            PrintCustomers(repository.GetMinCustomers("-1","100"));
         }
 
         static void TestSelect(ICustomerRepository repository) 
