@@ -6,12 +6,12 @@ namespace Chinook_SqlClient.Repositories
     public interface ICustomerRepository
     {
         public bool AddNewCustomer(Customer customer); //C
-
+        public void AddCustomer(string firstName, string lastName, string country, string postalCode, string phone, string email);
         public Customer GetCustomer(string id);
         public Customer GetCustomer(string firstName, string lastName);
 
         public List<Customer> GetAllCustomers(); //R
-        public List<Customer> GetMinCustomers(string min, string max); //R
+        public List<Customer> GetOffsetLimitCustomers(string offset, string limit); //R
 
         public bool UpdateCustomer(Customer customer); //U  
 

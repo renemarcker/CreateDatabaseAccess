@@ -20,6 +20,40 @@ namespace Chinook_SqlClient.Repositories
             throw new NotImplementedException();
         }
 
+        public void AddCustomer(string firstName, string lastName, string country,string postalCode, string phone, string email)
+        {
+            //CustomerId,
+            List<Customer> customerList = new List<Customer>();
+            string sql = "INSERT INTO Customer (FirstName, LastName, Country, PostalCode, Phone, Email) VALUES (@FirstName, @LastName, @Country, ISNULL(@PostalCode, ''), ISNULL(@Phone, ''), @Email)";
+
+
+            try
+            {
+
+                //connect
+                using (SqlConnection conn = new SqlConnection(ConnectionStringHelper.GetConnectionString()))
+                {
+                    conn.Open();
+                    //make a command
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@FirstName", firstName);
+                        cmd.Parameters.AddWithValue("@LastName", lastName);
+                        cmd.Parameters.AddWithValue("@Country", country);
+                        cmd.Parameters.AddWithValue("@PostalCode", postalCode);
+                        cmd.Parameters.AddWithValue("@Phone", phone);
+                        cmd.Parameters.AddWithValue("@Email", email);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex);
+                //log error
+            }
+        }
+
         public List<Customer> GetAllCustomers()
         {
             //CustomerId,
@@ -65,7 +99,7 @@ namespace Chinook_SqlClient.Repositories
             }
             return customerList;
         }
-        public List<Customer> GetMinCustomers(string min, string max)
+        public List<Customer> GetOffsetLimitCustomers(string offset, string limit)
         {
             //CustomerId,
             List<Customer> customerList = new List<Customer>();
@@ -80,8 +114,8 @@ namespace Chinook_SqlClient.Repositories
                     //make a command
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
-                        cmd.Parameters.AddWithValue("@min", min);
-                        cmd.Parameters.AddWithValue("@max", max);
+                        cmd.Parameters.AddWithValue("@min", offset);
+                        cmd.Parameters.AddWithValue("@max", limit);
                         //reader
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {

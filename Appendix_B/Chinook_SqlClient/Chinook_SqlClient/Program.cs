@@ -8,40 +8,51 @@ namespace Chinook_SqlClient
         static void Main(string[] args)
         {
             ICustomerRepository repository = new CustomerRepository();
-            TestSelectAll(repository);
+            //TestSelectAll(repository);
+            //TestSelectAllByOffsetLimit(repository);
+            //TestSelectByID(repository);
+            //TestSelectByID(repository);
+            //TestSelectByName(repository);
+            //TestInsert(repository);
             //TestSelect(repository);
         }
 
         static void TestSelectAll(ICustomerRepository repository) 
         { 
-            //PrintCustomers(repository.GetAllCustomers());
-            PrintCustomers(repository.GetMinCustomers("-1","100"));
+            PrintCustomers(repository.GetAllCustomers());
+            
         }
-
-        static void TestSelect(ICustomerRepository repository) 
+        static void TestSelectAllByOffsetLimit(ICustomerRepository repository)
+        {
+            PrintCustomers(repository.GetOffsetLimitCustomers("10", "20"));
+        }
+        static void TestSelectByID(ICustomerRepository repository) 
         {
             PrintCustomer(repository.GetCustomer("2"));
+        }
+        static void TestSelectByName(ICustomerRepository repository)
+        {
             PrintCustomer(repository.GetCustomer("Luís", "Gonçalves"));
         }
-
         static void TestInsert(ICustomerRepository repository)
         {
-            Customer test = new Customer()
-            {
-                FirstName = "Thomas",
-                LastName = "",
-                Country = "",
-                PostalCode = "12345",
-                Phone = "122152345124",
-                Email= "12345@gmail.com",
-            };
-            if (repository.AddNewCustomer(test)) 
-            {
-                Console.WriteLine("Yay, insert worked");
-            } else
-            {
-                Console.WriteLine("BOOO!!");
-            }
+            repository.AddCustomer("Thomas", "Osterhammel", "Denmark", "1337", "112", "thomasIsCool@HotThomas.dk");
+            //Customer test = new Customer()
+            //{
+            //    FirstName = "Thomas",
+            //    LastName = "",
+            //    Country = "",
+            //    PostalCode = "12345",
+            //    Phone = "122152345124",
+            //    Email= "12345@gmail.com",
+            //};
+            //if (repository.AddNewCustomer(test)) 
+            //{
+            //    Console.WriteLine("Yay, insert worked");
+            //} else
+            //{
+            //    Console.WriteLine("BOOO!!");
+            //}
         }
 
         static void TestUpdate(ICustomerRepository repository) 
