@@ -20,28 +20,66 @@ namespace Chinook_SqlClient.Repositories
             throw new NotImplementedException();
         }
 
-        public List<Customer> GetAllCustomers()
+        public void AddCustomer(string firstName, string lastName, string country,string postalCode, string phone, string email)
         {
+            //CustomerId,
             List<Customer> customerList = new List<Customer>();
-            string sql = "SELECT CustomerID, FirstName, LastName, Country, PostalCode, Phone, Email";
+            string sql = "INSERT INTO Customer (FirstName, LastName, Country, PostalCode, Phone, Email) VALUES (@FirstName, @LastName, @Country, ISNULL(@PostalCode, ''), ISNULL(@Phone, ''), @Email)";
+
+
             try
             {
 
-            //connect
-            using (SqlConnection conn = new SqlConnection(ConnectionStringHelper.GetConnectionString())) 
+                //connect
+                using (SqlConnection conn = new SqlConnection(ConnectionStringHelper.GetConnectionString()))
                 {
                     conn.Open();
                     //make a command
-                    using (SqlCommand cmd = new SqlCommand(sql,conn)) 
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@FirstName", firstName);
+                        cmd.Parameters.AddWithValue("@LastName", lastName);
+                        cmd.Parameters.AddWithValue("@Country", country);
+                        cmd.Parameters.AddWithValue("@PostalCode", postalCode);
+                        cmd.Parameters.AddWithValue("@Phone", phone);
+                        cmd.Parameters.AddWithValue("@Email", email);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex);
+                //log error
+            }
+        }
+
+        public List<Customer> GetAllCustomers()
+        {
+            //CustomerId,
+            List<Customer> customerList = new List<Customer>();
+            string sql = "SELECT  CustomerId, FirstName, LastName, Country, ISNULL(PostalCode,''), ISNULL(Phone,''), Email FROM Customer";
+            try
+            {
+
+                //connect
+                using (SqlConnection conn = new SqlConnection(ConnectionStringHelper.GetConnectionString()))
+                {
+                    conn.Open();
+                    //make a command
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
                         //reader
-                        using (SqlDataReader reader = cmd.ExecuteReader()) 
-                        { 
-                            while (reader.Read()) 
-                            { 
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+
+
+                            while (reader.Read())
+                            {
+
                                 //handle result
                                 Customer temp = new Customer();
-                                temp.CustomerID = reader.GetString(0);
+                                temp.CustomerId = reader.GetInt32(0).ToString();
                                 temp.FirstName = reader.GetString(1);
                                 temp.LastName = reader.GetString(2);
                                 temp.Country = reader.GetString(3);
@@ -54,19 +92,153 @@ namespace Chinook_SqlClient.Repositories
                     }
                 }
             }
-            catch (SqlException sqlEx)
+            catch (SqlException ex)
             {
-
+                Console.WriteLine(ex);
                 //log error
             }
             return customerList;
         }
+        public List<Customer> GetOffsetLimitCustomers(string offset, string limit)
+        {
+            //CustomerId,
+            List<Customer> customerList = new List<Customer>();
+            string sql = "SELECT CustomerId, FirstName, LastName, Country, ISNULL(PostalCode,''), ISNULL(Phone,''), Email FROM Customer WHERE CustomerId BETWEEN @min AND @max ";
+            try
+            {
 
+                //connect
+                using (SqlConnection conn = new SqlConnection(ConnectionStringHelper.GetConnectionString()))
+                {
+                    conn.Open();
+                    //make a command
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@min", offset);
+                        cmd.Parameters.AddWithValue("@max", limit);
+                        //reader
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+
+
+                            while (reader.Read())
+                            {
+
+                                //handle result
+                                Customer temp = new Customer();
+                                temp.CustomerId = reader.GetInt32(0).ToString();
+                                temp.FirstName = reader.GetString(1);
+                                temp.LastName = reader.GetString(2);
+                                temp.Country = reader.GetString(3);
+                                temp.PostalCode = reader.GetString(4);
+                                temp.Phone = reader.GetString(5);
+                                temp.Email = reader.GetString(6);
+                                customerList.Add(temp);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex);
+                //log error
+            }
+            return customerList;
+        }
         public Customer GetCustomer(string id)
         {
-            throw new NotImplementedException();
-        }
 
+            Customer temp = new Customer();
+            string sql = "SELECT  CustomerId, FirstName, LastName, Country, ISNULL(PostalCode,''), ISNULL(Phone,''), Email FROM Customer WHERE CustomerId = @CustomerId";
+            try
+            {
+
+                //connect
+                using (SqlConnection conn = new SqlConnection(ConnectionStringHelper.GetConnectionString()))
+                {
+                    conn.Open();
+                    //make a command
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@CustomerId", id);
+                        //reader
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                //handle result
+                                temp.CustomerId = reader.GetInt32(0).ToString();
+                                temp.FirstName = reader.GetString(1);
+                                temp.LastName = reader.GetString(2);
+                                temp.Country = reader.GetString(3);
+                                temp.PostalCode = reader.GetString(4);
+                                temp.Phone = reader.GetString(5);
+                                temp.Email = reader.GetString(6);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex);
+                //log error
+            }
+            return temp;
+
+        }
+        public Customer GetCustomer(string firstName, string lastName)
+        {
+
+            Customer temp = new Customer();
+            //string sql = "SELECT CustomerId, FirstName, LastName, Country, ISNULL(PostalCode,'') AS PostalCode, ISNULL(Phone,'') AS Phone, Email FROM Customer " +
+            string sql = "SELECT CustomerId, FirstName, LastName, Country, ISNULL(PostalCode,'') AS PostalCode, ISNULL(Phone,'') AS Phone, Email FROM Customer " +
+                         "WHERE FirstName LIKE @FirstName AND LastName LIKE @LastName";
+
+
+            try
+            {
+
+                //connect
+                using (SqlConnection conn = new SqlConnection(ConnectionStringHelper.GetConnectionString()))
+                {
+                    conn.Open();
+                    //make a command
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+                        //reader
+                        cmd.Parameters.AddWithValue("@FirstName", "%" + firstName + "%");
+                        cmd.Parameters.AddWithValue("@LastName", "%" + lastName + "%");
+
+
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+
+
+                            while (reader.Read())
+                            {
+                                //handle result
+                                temp.CustomerId = reader.GetInt32(0).ToString();
+                                temp.FirstName = reader.GetString(1);
+                                temp.LastName = reader.GetString(2);
+                                temp.Country = reader.GetString(3);
+                                temp.PostalCode = reader.GetString(4);
+                                temp.Phone = reader.GetString(5);
+                                temp.Email = reader.GetString(6);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex);
+                //log error
+            }
+            return temp;
+
+        }
         public bool UpdateCustomer(Customer customer)
         {
             throw new NotImplementedException();
