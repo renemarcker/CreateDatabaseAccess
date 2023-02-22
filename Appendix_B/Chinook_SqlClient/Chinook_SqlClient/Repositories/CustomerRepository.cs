@@ -11,22 +11,20 @@ namespace Chinook_SqlClient.Repositories
 {
     public class CustomerRepository : ICustomerRepository
     {
-        public bool AddNewCustomer(Customer customer)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool DeleteCustomer(string id)
-        {
-            throw new NotImplementedException();
-        }
-
+        /// <summary>
+        /// Adds a new customer to Chinook database based on the provided customer details.
+        /// </summary>
+        /// <param name="firstName">The first name of the customer to be added.</param>
+        /// <param name="lastName">The last name of the customer to be added.</param>
+        /// <param name="country">The country of the customer to be added.</param>
+        /// <param name="postalCode">The postal code of the customer to be added. Can be null.</param>
+        /// <param name="phone">The phone number of the customer to be added. Can be null.</param>
+        /// <param name="email">The email address of the customer to be added.</param>
         public void AddCustomer(string firstName, string lastName, string country, string postalCode, string phone, string email)
         {
             //CustomerId,
             List<Customer> customerList = new List<Customer>();
             string sql = "INSERT INTO Customer (FirstName, LastName, Country, PostalCode, Phone, Email) VALUES (@FirstName, @LastName, @Country, ISNULL(@PostalCode, ''), ISNULL(@Phone, ''), @Email)";
-
 
             try
             {
@@ -54,7 +52,10 @@ namespace Chinook_SqlClient.Repositories
                 //log error
             }
         }
-
+        /// <summary>
+        /// Method that returns all Customers from Chinook Customer table 
+        /// </summary>
+        /// <returns>returns a list with all existing Customer Model objects</returns>
         public List<Customer> GetAllCustomers()
         {
             //CustomerId,
@@ -100,11 +101,19 @@ namespace Chinook_SqlClient.Repositories
             }
             return customerList;
         }
+
+        /// <summary>
+        /// Retrieves a list of customers from a SQL Server database based on the provided offset and limit parameters.
+        /// </summary>
+        /// <param name="offset">The starting position of Customers to be returned.</param>
+        /// <param name="limit">The maximum number of Customers to be returned.</param>
+        /// <returns>A List of 'Customer' objects.</returns>
         public List<Customer> GetOffsetLimitCustomers(string offset, string limit)
         {
             //CustomerId,
             List<Customer> customerList = new List<Customer>();
-            string sql = "SELECT CustomerId, FirstName, LastName, Country, ISNULL(PostalCode,''), ISNULL(Phone,''), Email FROM Customer WHERE CustomerId BETWEEN @min AND @max ";
+            string sql = "SELECT CustomerId, FirstName, LastName, Country, ISNULL(PostalCode,''), ISNULL(Phone,''), Email FROM Customer WHERE CustomerId BETWEEN @offset AND @limit ";
+
             try
             {
 
@@ -115,8 +124,10 @@ namespace Chinook_SqlClient.Repositories
                     //make a command
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
-                        cmd.Parameters.AddWithValue("@min", offset);
-                        cmd.Parameters.AddWithValue("@max", limit);
+                        limit = (Int32.Parse(limit) + Int32.Parse(offset)).ToString();
+
+                        cmd.Parameters.AddWithValue("@offset", offset);
+                        cmd.Parameters.AddWithValue("@limit", (limit));
                         //reader
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {
@@ -147,6 +158,12 @@ namespace Chinook_SqlClient.Repositories
             }
             return customerList;
         }
+
+        /// <summary>
+        /// Method for getting Input Id customer 
+        /// </summary>
+        /// <param name="id">the id for the customer you want returned</param>
+        /// <returns>returns a customer model object</returns>
         public Customer GetCustomer(string id)
         {
 
@@ -189,14 +206,20 @@ namespace Chinook_SqlClient.Repositories
             return temp;
 
         }
+
+        /// <summary>
+        /// Method for getting the Customer By first name and last name
+        /// </summary>
+        /// <param name="firstName">the FirstName to compare by</param>
+        /// <param name="lastName">the LastName to compare by</param>
+        /// <returns></returns>
         public Customer GetCustomer(string firstName, string lastName)
         {
 
             Customer temp = new Customer();
-            //string sql = "SELECT CustomerId, FirstName, LastName, Country, ISNULL(PostalCode,'') AS PostalCode, ISNULL(Phone,'') AS Phone, Email FROM Customer " +
+
             string sql = "SELECT CustomerId, FirstName, LastName, Country, ISNULL(PostalCode,'') AS PostalCode, ISNULL(Phone,'') AS Phone, Email FROM Customer " +
                          "WHERE FirstName LIKE @FirstName AND LastName LIKE @LastName";
-
 
             try
             {
@@ -215,7 +238,6 @@ namespace Chinook_SqlClient.Repositories
 
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {
-
 
                             while (reader.Read())
                             {
@@ -240,6 +262,17 @@ namespace Chinook_SqlClient.Repositories
             return temp;
 
         }
+
+        /// <summary>
+        /// Method that updates the (input id)Customer from Customer table from Chinook database with input variables.
+        /// </summary>
+        /// <param name="idForUpdate">the customer id for the customer you want updated</param>
+        /// <param name="firstName">the update for firstName</param>
+        /// <param name="lastName">the update for lastName</param>
+        /// <param name="country">the update for country</param>
+        /// <param name="postalCode">the update for postalCode</param>
+        /// <param name="phone">the update for phone</param>
+        /// <param name="email">the update for email</param>
         public void UpdateCustomer(string idForUpdate, string firstName, string lastName, string country, string postalCode, string phone, string email)
         {
 
@@ -276,13 +309,15 @@ namespace Chinook_SqlClient.Repositories
             }
 
         }
+
+        /// <summary>
+        /// Method for getting a counter of customers pr country in descending order 
+        /// </summary>
+        /// <returns>returns a list of customerCountry model object with customer count and country name </returns>
         public List<CustomerCountry> GetCustomerCountPrCountry()
         {
-
             //CustomerId,
             List<CustomerCountry> customerPrCountryList = new List<CustomerCountry>();
-
-
 
             string sql = "SELECT COUNT(CustomerId), Country FROM CUSTOMER GROUP BY Country ORDER BY COUNT(CustomerId) DESC";
             try
@@ -317,6 +352,11 @@ namespace Chinook_SqlClient.Repositories
             }
             return customerPrCountryList;
         }
+
+        /// <summary>
+        /// Method that returns the customers sorted by highest spender 
+        /// </summary>
+        /// <returns>a list of all customers sorted by highest spender first</returns>
         public List<CustomerSpender> GetHighestSpenderCustomer()
         {
 
@@ -357,12 +397,16 @@ namespace Chinook_SqlClient.Repositories
             }
             return customerPrCountryList;
         }
+
+        /// <summary>
+        /// Method for getting input ID customers favorite genre or Genres if there are more with equal occurance.
+        /// </summary>
+        /// <param name="customerId">the ID of the customer you want favorite genre from</param>
+        /// <returns>Returns a CustomerGenre Model Object with firstname lastname and a list of favourite genres </returns>
         public CustomerGenre GetCustomerMostPopularGenre(string customerId)
         {
-
             //CustomerId,
             CustomerGenre customerGenre = new CustomerGenre();
-            
 
             string sql = "WITH GenreCounts AS (" +
                 "SELECT c.FirstName, c.LastName, t.GenreId, COUNT(*) as Count " +
@@ -378,7 +422,6 @@ namespace Chinook_SqlClient.Repositories
                 "WHERE Count = (SELECT MAX(Count) FROM GenreCounts);";
             try
             {
-
                 //connect
                 using (SqlConnection conn = new SqlConnection(ConnectionStringHelper.GetConnectionString()))
                 {

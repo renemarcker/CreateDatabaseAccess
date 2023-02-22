@@ -8,6 +8,7 @@ namespace Chinook_SqlClient
         static void Main(string[] args)
         {
             ICustomerRepository repository = new CustomerRepository();
+         //Simply uncomment following methods if you want to test.
             //TestSelectAll(repository);
             //TestSelectAllByOffsetLimit(repository);
             //TestSelectByID(repository);
@@ -18,9 +19,10 @@ namespace Chinook_SqlClient
             //TestUpdate(repository);
             //TestGetCustomerCountPrCountry(repository);
             //TestGetHighestSpenderCustomer(repository);
-            TestGetCustomerMostPopularGenre(repository);
+            //TestGetCustomerMostPopularGenre(repository);
         }
 
+        // The following methods are for testing the Customer repository and its database features
         static void TestSelectAll(ICustomerRepository repository) 
         { 
             PrintCustomers(repository.GetAllCustomers());
@@ -56,10 +58,7 @@ namespace Chinook_SqlClient
                 Console.WriteLine($"{c.country}: {c.count}");
             }
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="repository"></param>
+        
         static void TestGetHighestSpenderCustomer(ICustomerRepository repository)
         {
             List<CustomerSpender> testCustomerByTotalSpent = new List<CustomerSpender>();
@@ -87,16 +86,10 @@ namespace Chinook_SqlClient
         }
         static void PrintCustomers(IEnumerable<Customer> customers) 
         {
-            int count = 0;
-
-            
             foreach (Customer customer in customers) 
             {
                 PrintCustomer(customer);
-                count++;
-         
             }
-            Console.WriteLine("Count: " +count);
         }
 
         static void PrintCustomer(Customer customer) 

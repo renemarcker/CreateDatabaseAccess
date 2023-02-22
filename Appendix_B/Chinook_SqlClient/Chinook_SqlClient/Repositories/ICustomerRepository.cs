@@ -17,7 +17,7 @@ namespace Chinook_SqlClient.Repositories
 
         public void UpdateCustomer(string idForUpdate, string firstName, string lastName, string country, string postalCode, string phone, string email); //U  
 
-        public bool DeleteCustomer(string id); //D
+       
 
 
     }
