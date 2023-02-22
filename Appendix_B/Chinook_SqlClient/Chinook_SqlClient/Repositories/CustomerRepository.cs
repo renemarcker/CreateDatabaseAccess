@@ -357,6 +357,56 @@ namespace Chinook_SqlClient.Repositories
             }
             return customerPrCountryList;
         }
-        
+        public CustomerGenre GetCustomerMostPopularGenre(string customerId)
+        {
+
+            //CustomerId,
+            CustomerGenre customerGenre = new CustomerGenre();
+            
+
+            string sql = "WITH GenreCounts AS (" +
+                "SELECT c.FirstName, c.LastName, t.GenreId, COUNT(*) as Count " +
+                "FROM Invoice i, InvoiceLine il, Track t, Customer c " +
+                "WHERE i.InvoiceId = il.InvoiceId " +
+                "AND il.TrackId = t.TrackId " +
+                "AND i.CustomerId = c.CustomerId " +
+                "AND i.CustomerId = @customerId " +
+                "GROUP BY c.FirstName, c.LastName, t.GenreId" +
+                ") " +
+                "SELECT FirstName, LastName, (SELECT Name FROM Genre WHERE GenreId = GenreCounts.GenreId) AS GenreName " +
+                "FROM GenreCounts " +
+                "WHERE Count = (SELECT MAX(Count) FROM GenreCounts);";
+            try
+            {
+
+                //connect
+                using (SqlConnection conn = new SqlConnection(ConnectionStringHelper.GetConnectionString()))
+                {
+                    conn.Open();
+                    //make a command
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@customerId", customerId);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                //handle result
+
+                                customerGenre.CustomerFirstName = reader.GetString(0);
+                                customerGenre.CustomerLastName = reader.GetString(1);
+                                customerGenre.FavoriteGenres.Add(reader.GetString(2));
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex);
+                //log error
+            }
+            return customerGenre;
+        }
     }
 }

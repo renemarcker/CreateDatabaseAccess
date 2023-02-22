@@ -12,7 +12,7 @@ namespace Chinook_SqlClient.Repositories
         public List<Customer> GetAllCustomers(); //R
         public List<CustomerCountry> GetCustomerCountPrCountry(); //R
         public List<CustomerSpender> GetHighestSpenderCustomer(); //R
-
+        public CustomerGenre GetCustomerMostPopularGenre(string customerId); //R
         public List<Customer> GetOffsetLimitCustomers(string offset, string limit); //R
 
         public void UpdateCustomer(string idForUpdate, string firstName, string lastName, string country, string postalCode, string phone, string email); //U  

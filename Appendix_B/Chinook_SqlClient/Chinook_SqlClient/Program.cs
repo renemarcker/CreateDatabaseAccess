@@ -17,7 +17,8 @@ namespace Chinook_SqlClient
             //TestSelect(repository);
             //TestUpdate(repository);
             //TestGetCustomerCountPrCountry(repository);
-            TestGetHighestSpenderCustomer(repository);
+            //TestGetHighestSpenderCustomer(repository);
+            TestGetCustomerMostPopularGenre(repository);
         }
 
         static void TestSelectAll(ICustomerRepository repository) 
@@ -70,7 +71,20 @@ namespace Chinook_SqlClient
                 Console.WriteLine($"{c.customerId}: {c.customerName} total: {c.spendTotal}");
             }
         }
+        
+        static void TestGetCustomerMostPopularGenre(ICustomerRepository repository)
+        {
+            CustomerGenre testCustomerGenre = new CustomerGenre();
+            testCustomerGenre = repository.GetCustomerMostPopularGenre("12");
 
+            // lets write out the list to see the customers ordered by their total spending amount
+            Console.WriteLine($"{testCustomerGenre.CustomerFirstName} {testCustomerGenre.CustomerLastName}");
+            Console.Write("Favorite Genre/Genres: ");
+            foreach (string genreName in testCustomerGenre.FavoriteGenres)
+            {
+                Console.Write($"{genreName}, ");
+            }
+        }
         static void PrintCustomers(IEnumerable<Customer> customers) 
         {
             int count = 0;
